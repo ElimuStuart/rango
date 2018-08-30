@@ -1,0 +1,63 @@
+{% extends 'rango/base.html' %}
+
+{% block title %}{{ category_name }}{% endblock %}
+
+{% block body_block %}
+    <h1>{{ category_name }}</h1>
+    {% if category %}
+        {% if pages %}
+        <div id="pages">
+            <ul>
+                {% for page in pages %}
+                <li>
+                    <a href="/rango/goto/?page_id={{ page.id }}">{{ page.title }}</a>
+                    {% if page.views > 1 %}
+                      - ({{ page.views }} views)
+                    {% elif page.views == 1%}
+                      - ({{ page.views }} view)
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <strong>No pages in current category</strong>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <div class="container-fluid">
+                <p>Search for a page.</p>
+                <form class="col-md-8 form-search" id="search_form" method="post" action="/rango/category/{{ category_name_url }}/">
+                    {% csrf_token %}
+                    <input type="text" class="input-lg" data-i-search-input="true" name="query" value="{{ category_name }}" id="query">
+                    <button type="submit" class="btn btn-success" name="submit" value="Search">Search</button>
+                </form>
+            </div>
+            <div class="container-fluid">
+                {% if result_list %}
+                    <ol>
+                        {% for result in result_list %}
+                          <li>
+                              <strong><a href="{{ result.link }}">{{ result.title }}</a> </strong>
+                              <p>{{ result.summary }}</p>
+                              <button data-catid="{{ category.id }} " data-title="{{ result.title }}" data-url="{{ result.link }}"
+                                      class="rango-btn btn btn-info" type="submit">Add</button>
+                          </li>
+                        {% endfor %}
+                    </ol>
+                {% else %}
+                    <br>
+                    <p>No results found</p>
+                {% endif %}
+            </div>
+            <a href="/rango/category/{{ category_name_url}}/add_page/">Add Page</a>
+        {% endif %}
+        <p>
+            <b id="like_count">{{ category.likes }}</b>people like this category.
+
+            {% if user.is_authenticated %}
+                <button id="likes" data-catid="{{ category.id }}" class="btn btn-min btn-primary" type="button">Like</button>
+            {% endif %}
+        </p>
+    {% endif %}
+{% endblock %}

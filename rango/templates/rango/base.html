@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="{% static 'rango/css/bootstrap-fluid-adj.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'rango/css/bootstrap.css' %}">
+    <script type="text/javascript" src="{% static 'rango/js/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'rango/js/rango-ajax.js' %}"></script>
+    <title>Rango - {% block title %}How to Tango with Django {% endblock %}</title>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="/rango/">Rango</a>
+            </div>
+                <div class="navbar-collapse collapse" id="collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if user.is_authenticated %}
+                        <li class="navbar-text">Welcome {{ user.username }}!</li>
+                        <li><a href="/rango/logout">Logout</a></li>
+                        <li><a href="/rango/profile">Profile</a> </li>
+                        <!--<li><a href="/rango/search">Search</a></li>-->
+                        {% else %}
+                        <li><a href="/rango/register">Register Here</a></li>
+                        <li><a href="/rango/login">Login</a></li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        {% if user.is_authenticated %}
+                        <li><a href="/rango/restricted">Restricted Page</a></li>
+                        <li><a href="/rango/add_category">Add a New Category</a></li>
+                        {% endif %}
+                        <li><a href="/rango/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="well sidebar-nav">
+                    {% block sidebar %}
+                    {% endblock %}
+                    <ul class="nav list-group">
+                        <li class="navbar-header">Find a category</li>
+                        <form>
+                            <label></label>
+                            <input class="form-control col-md-10" type="text" name="suggestion" value="" id="suggestion">
+                        </form>
+                    </ul>
+                    {% if cat_list %}
+                        <div id="cats">
+                              {% include 'rango/category_list.html' with cat_list=cat_list %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div> <!-- /div -->
+            <div class="col-md-9">
+                {% block body_block %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <footer>
+        <div class="container">
+            <p>&copy; Rango: How to Tango with Django 2013</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'rango/js/bootstrap.js' %}"></script>
+    <script src="{% static 'rango/js/jquery-3.2.1.min.js' %}"></script>
+</body>
+</html>
